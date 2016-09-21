@@ -5,25 +5,25 @@ import java.util.Random;
 
 public class PriorityQMarket {
     //Анонимный класс компаратора
-    public static Comparator<Customer> idComparator = new Comparator<Customer>() {
-        public int compare(Customer c1, Customer c2) {
+    public static Comparator<Investor> idComparator = new Comparator<Investor>() {
+        public int compare(Investor c1, Investor c2) {
             return (int) (c1.getId() - c2.getId());
         }
     };
 
     // служебный метод добавления элементов в очередь
-    private static void addDataToQueue(Queue<Customer> customerPriorityQueue) {
+    private static void addDataToQueue(Queue<Investor> investorPriorityQueue) {
         Random rand = new Random();
         for (int i = 0; i < 7; i++) {
             int id = rand.nextInt(100);
-            customerPriorityQueue.add(new Customer(id, "Customer " + id));
+            investorPriorityQueue.add(new Investor());
         }
     }
 
     //служебный метод для обработки данных очереди
-    private static void pollDataFromQueue(Queue<Customer> customerPriorityQueue) {
+    private static void pollDataFromQueue(Queue<Investor> investorPriorityQueue) {
         while (true) {
-            Customer cust = customerPriorityQueue.poll();
+            Investor cust = investorPriorityQueue.poll();
             if (cust == null) break;
             System.out.println("Обработка клиента с id=" + cust.getId());
         }
@@ -42,9 +42,9 @@ public class PriorityQMarket {
         }
 
         //Пример PriorityQueue с компаратором
-        Queue<Customer> customerPriorityQueue = new PriorityQueue<>(7, idComparator);
-        addDataToQueue(customerPriorityQueue);
-        pollDataFromQueue(customerPriorityQueue);
+        Queue<Investor> investorPriorityQueue = new PriorityQueue<>(7, idComparator);
+        addDataToQueue(investorPriorityQueue);
+        pollDataFromQueue(investorPriorityQueue);
     }
 
 }
