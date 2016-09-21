@@ -1,7 +1,7 @@
 import java.util.Random;
 
 /**
- * Created by 01 on 21.09.2016.
+ * Created by alex on 21.09.2016.
  */
 public class Investor {
 
@@ -16,14 +16,15 @@ public class Investor {
         this.id = invesorsCount++;
 
         // debug
-        System.out.println("Generated Investor " + this.id + "with assets");
+        System.out.println("Generated investor " + this.id + " with assets: ");
+        spawnAssets();
     }
 
     public int getId() {
         return id;
     }
 
-    public void inheritFortune() {
+    private void spawnAssets() {
         portfolio = new Assets(r.nextInt(100), r.nextInt(100));
 
         // debug

@@ -1,52 +1,96 @@
 import java.util.Comparator;
 import java.util.PriorityQueue;
 import java.util.Queue;
-import java.util.Random;
 
 public class PriorityQMarket {
-    //Анонимный класс компаратора
-    public static Comparator<Investor> idComparator = new Comparator<Investor>() {
+
+    private Queue<Investor> buyQueue;
+    private Queue<Investor> sellQueue;
+
+    // Anonimous comparator classes
+    public static Comparator<Investor> priceComparatorAsc = new Comparator<Investor>() {
         public int compare(Investor c1, Investor c2) {
-            return (int) (c1.getId() - c2.getId());
+            return (int) (c1.portfolio.getPrice() - c2.portfolio.getPrice());
         }
     };
 
-    // служебный метод добавления элементов в очередь
-    private static void addDataToQueue(Queue<Investor> investorPriorityQueue) {
-        Random rand = new Random();
-        for (int i = 0; i < 7; i++) {
-            int id = rand.nextInt(100);
-            investorPriorityQueue.add(new Investor());
+    public static Comparator<Investor> priceComparatorDesc = new Comparator<Investor>() {
+        public int compare(Investor c1, Investor c2) {
+            return (int) (c2.portfolio.getPrice() - c1.portfolio.getPrice());
         }
-    }
-
-    //служебный метод для обработки данных очереди
-    private static void pollDataFromQueue(Queue<Investor> investorPriorityQueue) {
-        while (true) {
-            Investor cust = investorPriorityQueue.poll();
-            if (cust == null) break;
-            System.out.println("Обработка клиента с id=" + cust.getId());
-        }
-    }
+    };
 
     public static void main(String[] args) {
-        //пример естественного добавления элементов в приоритетную очередь
-        Queue<Integer> integerPriorityQueue = new PriorityQueue<>(7);
-        Random rand = new Random();
-        for (int i = 0; i < 7; i++) {
-            integerPriorityQueue.add(new Integer(rand.nextInt(100)));
-        }
-        for (int i = 0; i < 7; i++) {
-            Integer in = integerPriorityQueue.poll();
-            System.out.println("Обрабатываем Integer:" + in);
-        }
-
-        //Пример PriorityQueue с компаратором
-        Queue<Investor> investorPriorityQueue = new PriorityQueue<>(7, idComparator);
-        addDataToQueue(investorPriorityQueue);
-        pollDataFromQueue(investorPriorityQueue);
+        PriorityQMarket simulation = new PriorityQMarket();
+        simulation.simulate();
     }
 
+    public void simulate() {
+
+        // set Queues' sizes
+        int buyQueueSize = 7;
+        int sellQueueSize = 7;
+
+        generateBuyQueue(buyQueueSize);
+        generateSellQueue(sellQueueSize);
+        conductTransactions();
+
+        // PriorityQueue with comparator
+        Queue<Investor> investorPriorityQueue = new PriorityQueue<>(7, priceComparatorAsc);
+    }
+
+    public void generateBuyQueue(int buyQueueSize) {
+
+        // debug
+        System.out.println("Generate buyers: ");
+
+        buyQueue = new PriorityQueue<>(buyQueueSize, priceComparatorDesc);
+
+        for (int i = 0; i < buyQueueSize; i++) {
+            buyQueue.add(new Investor());
+        }
+    }
+
+    public void generateSellQueue(int sellQueueSize) {
+
+        // debug
+        System.out.println("Generate sellers: ");
+
+        sellQueue = new PriorityQueue<>(sellQueueSize, priceComparatorAsc);
+
+        for (int i = 0; i < sellQueueSize; i++) {
+            sellQueue.add(new Investor());
+        }
+    }
+
+    public void conductTransactions() {
+        while (!buyQueue.isEmpty() || !sellQueue.isEmpty()) {
+            Investor buyer = buyQueue.peek();
+            Investor seller = sellQueue.peek();
+            if (seller.portfolio.getPrice() > buyer.portfolio.getPrice()) {
+                System.out.println("Nothing else to trade. Exit.");
+                return;
+            } else {
+                int diffInQuantity = seller.portfolio.getCount() - buyer.portfolio.getCount();
+
+                System.out.println("Sold from investor " + seller.getId() + " to investor "
+                        + buyer.getId() + " : "
+                        + ((diffInQuantity < 0) ? seller.portfolio.getCount() : buyer.portfolio.getCount())
+                        + " assets at price " + seller.portfolio.getPrice());
+
+                buyQueue.poll();
+                sellQueue.poll();
+
+                if (diffInQuantity < 0) {
+                    buyer.portfolio.setCount(Math.abs(diffInQuantity));
+                    buyQueue.add(buyer);
+                } else if (diffInQuantity > 0) {
+                    seller.portfolio.setCount(Math.abs(diffInQuantity));
+                    sellQueue.add(seller);
+                }
+            }
+        }
+    }
 }
 
 
