@@ -25,9 +25,9 @@ public class Investor {
     }
 
     private void spawnAssets() {
-        portfolio = new Assets(r.nextInt(100), r.nextInt(100));
+        portfolio = new Assets(r.nextInt(100) + 1, r.nextInt(100) + 1);
 
         // debug
-        System.out.println("Stock portfolio now is: " + portfolio.getCount() + " at " + portfolio.getPrice());
+        System.out.println("\t\t\t\t\tOrder is: " + portfolio.getCount() + " shares for " + portfolio.getPrice() + "$ each ");
     }
 }

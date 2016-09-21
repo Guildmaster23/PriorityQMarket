@@ -76,7 +76,7 @@ public class PriorityQMarket {
                 System.out.println("Sold from investor " + seller.getId() + " to investor "
                         + buyer.getId() + " : "
                         + ((diffInQuantity < 0) ? seller.portfolio.getCount() : buyer.portfolio.getCount())
-                        + " assets at price " + seller.portfolio.getPrice());
+                        + " shares at price " + seller.portfolio.getPrice() + "$ each");
 
                 buyQueue.poll();
                 sellQueue.poll();
